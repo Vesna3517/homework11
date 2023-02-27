@@ -5,7 +5,7 @@ pipeline {
             agent {
                 docker{
                     image 'maven:latest'
-                    args '-v $HOME/boxfuse:/usr/src/boxfuse'
+                    args '-v /root/boxfuse:/usr/src/boxfuse'
                 }
             }
             stages {
@@ -24,7 +24,13 @@ pipeline {
         }
         stage ('deploy') {
             agent none
-            stages {}
+            stages {
+                stage ('deploy to tomcat') {
+                    steps {
+                        deploy adapters: [tomcat9(credentialsId: 'cbde0fd5-c24b-42e9-9f96-2383ded301f4', path: '', url: 'http://10.132.0.11:8080')], contextPath: 'web3', war: '/root/boxfuse/target/*.war'
+                    }
+                }
+            }
         }
     }
 }
