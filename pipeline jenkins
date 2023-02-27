@@ -1,0 +1,30 @@
+pipeline {
+    agent none
+    stages {
+        stage ('build') {
+            agent {
+                docker{
+                    image 'maven:latest'
+                    args '-v $HOME/boxfuse:/usr/src/boxfuse'
+                }
+            }
+            stages {
+                stage ('git') {
+                    steps {
+                        sh 'apt update && apt install git -y'
+                        sh 'git clone https://github.com/boxfuse/boxfuse-sample-java-war-hello.git /usr/src/boxfuse'
+                    }
+                }
+                stage ('build') {
+                    steps {
+                        sh 'mvn -f /usr/src/boxfuse/pom.xml package'
+                    }
+                }
+            }
+        }
+        stage ('deploy') {
+            agent none
+            stages {}
+        }
+    }
+}
