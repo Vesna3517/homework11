@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage ('build') {
             agent {
-                docker{
+                docker {
                     image 'maven:latest'
                     args '-v /root/boxfuse:/usr/src/boxfuse'
                 }
